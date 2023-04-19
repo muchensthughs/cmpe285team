@@ -70,8 +70,8 @@ How many extra feature should be implemented to improve the project.
 ## start app locally:
 1. change mysql configs
 2.
-'''
+```
 export FLASK_APP=flask_app
 export FLASK_ENV=development
 flask run
-'''
+```
