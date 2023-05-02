@@ -78,3 +78,9 @@ export FLASK_APP=flask_app
 export FLASK_ENV=development
 flask run
 ```
+
+### Functionalities
+1. Home page user login/signup
+2. Logged in user can go to portfolio page. Portfolio shows all current strategies/stocks/values/histories etc.
+3. If there is no investment, user can go to investment selection page, where amount of money/strategies will be selected.
+4. Logout
