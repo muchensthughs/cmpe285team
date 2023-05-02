@@ -70,6 +70,7 @@ How many extra feature should be implemented to improve the project.
 ## How to start (for developer)
 1. set up your lcoal mysql server
 2. start mysql server
+` sudo mysql -u root `
 3. In config.py, change configs for your own mysql server
 4. run app
 ```
