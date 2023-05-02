@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS user (
 
 CREATE TABLE IF NOT EXISTS account (
    username VARCHAR(255) PRIMARY KEY,
-   amount DECIMAL(19,4)
+   amount DECIMAL(19,4),
+   save_time TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS plan (
