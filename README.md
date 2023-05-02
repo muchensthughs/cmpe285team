@@ -6,14 +6,10 @@ Stock Portfolio Suggestion Engine
 
 ## Group member:
 
-Krishna Gupta - 015721199
-
-AJ Dela Cruz - 013398190
-
-Mu Chen - 014725425
-
+Krishna Gupta - 015721199  
+AJ Dela Cruz - 013398190  
+Mu Chen - 014725425  
 Parmeet Singh - 010672090
-
 
 ## Research needed:
 
