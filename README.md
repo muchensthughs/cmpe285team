@@ -66,3 +66,14 @@ How stocks/ETFs are mapped to investing strategy
 How the money is divided among buying
 How to present the weekly history of the portfolio value
 How many extra feature should be implemented to improve the project.
+
+## How to start (for developer)
+1. set up your lcoal mysql server
+2. start mysql server
+3. In config.py, change configs for your own mysql server
+4. run app
+```
+export FLASK_APP=flask_app
+export FLASK_ENV=development
+flask run
+```
