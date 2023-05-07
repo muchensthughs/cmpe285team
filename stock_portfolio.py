@@ -81,8 +81,8 @@ def create_portfolio(investment_amount, selected_strategies):
 def calculate_weekly_trend(portfolio):
     weekly_trend = []
 
-    # Loop through the past 5 days (No Weekend)
-    for i in range(5):
+    # keep 5 days history of the overall portfolio value (No Weekend)
+    for i in range(7):
         # Get the date for each day
         date = datetime.date.today() - datetime.timedelta(days=i + 1)
         daily_value = 0
