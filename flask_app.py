@@ -1,16 +1,17 @@
 from flask import Flask, render_template, request, session
-import MySQLdb
+# import MySQLdb
 from config import *
 from utils import *
+from stock_portfolio import Strategy, create_portfolio, calculate_weekly_trend
 
 app = Flask(__name__)
 app.secret_key = 'uihd3453'
 
-db=MySQLdb.connect(MYSQL_HOST,MYSQL_USER,MYSQL_PASSWORD,MYSQL_DB)
+# db=MySQLdb.connect(MYSQL_HOST,MYSQL_USER,MYSQL_PASSWORD,MYSQL_DB)
 
-@app.route('/', methods=['GET'])
-def index():
-    return render_template('index.html')
+# @app.route('/', methods=['GET'])
+# def index():
+#     return render_template('index.html')
 
 @app.route('/test')
 def test():
@@ -48,3 +49,28 @@ def signup():
         except Exception as e:
             return render_template('signup.html', message = 'Sign up failed, please try a different combination')
         return render_template('index.html')
+    
+
+#route for the Stock Portfolio Suggestion Engine
+@app.route("/", methods=["GET", "POST"])
+def index():
+    # Check if the request method is POST (form submission)
+    if request.method == "POST":
+        # Get the investment amount and selected strategies from the form
+        investment_amount = float(request.form["investment_amount"])
+        strategies = request.form.getlist("strategies")
+        # Create the portfolio and weekly history based on the investment amount and strategies
+        portfolio = create_portfolio(investment_amount, strategies)
+        weekly_trend = calculate_weekly_trend(portfolio)
+
+        # Render the portfolio and weekly history data
+        return render_template(
+            "portfolio_suggestion.html", portfolio=portfolio, weekly_trend=weekly_trend
+        )
+    # Render form
+    return render_template("portfolio_suggestion.html")
+
+
+# Run the app
+if __name__ == "__main__":
+    app.run(debug=True, port=8000)
