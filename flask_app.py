@@ -13,9 +13,11 @@ app.secret_key = 'uihd3453'
 # def index():
 #     return render_template('index.html')
 
+
 @app.route('/test')
 def test():
     return "test"
+
 
 @app.route('/testmysql')
 def testmysql():
@@ -23,18 +25,22 @@ def testmysql():
     res = executeSql(db, sql)
     return res[0][0]
 
+
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form.get('username')
     password = request.form.get('password')
-    sql = "select * from user where username = '%s' and password = '%s'" % (username, password)
+    sql = "select * from user where username = '%s' and password = '%s'" % (
+        username, password)
     res = executeSql(db, sql)
     if len(res) < 1:
         return render_template('login_failed.html')
     else:
         # save username to session
         session['username'] = username
-    return session.pop('username', None) # got to page that shows current plan etc.
+    # got to page that shows current plan etc.
+    return session.pop('username', None)
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -45,13 +51,13 @@ def signup():
         password = request.form.get('password')
         sql = "insert into user values ('%s', '%s')" % (username, password)
         try:
-            executeSql(db, sql) 
+            executeSql(db, sql)
         except Exception as e:
-            return render_template('signup.html', message = 'Sign up failed, please try a different combination')
+            return render_template('signup.html', message='Sign up failed, please try a different combination')
         return render_template('index.html')
-    
 
-#route for the Stock Portfolio Suggestion Engine
+
+# route for the Stock Portfolio Suggestion Engine
 @app.route("/", methods=["GET", "POST"])
 def index():
     # Check if the request method is POST (form submission)
@@ -59,13 +65,19 @@ def index():
         # Get the investment amount and selected strategies from the form
         investment_amount = float(request.form["investment_amount"])
         strategies = request.form.getlist("strategies")
+        strategies_string = str(','.join(strategies))
+        print("strategies", strategies_string)
         # Create the portfolio and weekly history based on the investment amount and strategies
         portfolio = create_portfolio(investment_amount, strategies)
         weekly_trend = calculate_weekly_trend(portfolio)
 
         # Render the portfolio and weekly history data
         return render_template(
-            "portfolio_suggestion.html", portfolio=portfolio, weekly_trend=weekly_trend
+            "portfolio_suggestion.html",
+            portfolio=portfolio,
+            weekly_trend=weekly_trend,
+            investment_amount=investment_amount,
+            strategies=strategies_string
         )
     # Render form
     return render_template("portfolio_suggestion.html")

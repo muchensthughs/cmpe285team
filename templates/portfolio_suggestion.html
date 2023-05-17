@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Portfolio Suggestion Engine</title>
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script>
         function validateForm(event) {
             const checked_strategies = document.querySelectorAll('input[name="strategies"]:checked').length;
@@ -16,80 +17,181 @@
                 event.preventDefault();
             }
         }
+
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
+    <style>
+        body {
+            padding: 20px;
+        }
+        form {
+            padding-top: 20px;
+        }
+        h2{
+            padding: 20px;
+        }
+    </style>
+
 
 </head>
 
 <body>
     <h1>Stock Portfolio Suggestion Engine</h1>
-    <form method="POST" autocomplete="off" onsubmit="validateForm(event)">
-        <label for="investment_amount">Investment Amount (USD):</label>
-        <input type="number" name="investment_amount" min="5000" step="0.01" required>
-        <br>
-        <label>Investment Strategy:</label>
-        <br>
-
-        <input type="checkbox" name="strategies" value="Ethical Investing">
-        <label for="strategies">Ethical Investing</label>
-        <br>
-        <input type="checkbox" name="strategies" value="Growth Investing">
-        <label for="strategies">Growth Investing</label>
-        <br>
-        <input type="checkbox" name="strategies" value="Index Investing">
-        <label for="strategies">Index Investing</label>
-        <br>
-        <input type="checkbox" name="strategies" value="Quality Investing">
-        <label for="strategies">Quality Investing</label>
-        <br>
-        <input type="checkbox" name="strategies" value="Value Investing">
-        <label for="strategies">Value Investing</label>
-        <br>
-        <button type="submit">Create Portfolio</button>
+    {% if not portfolio %}
+    <form id="portfolio-form" method="POST" autocomplete="off" onsubmit="validateForm(event)">
+        <div class="mb-3">
+            <label for="investment_amount" class="form-label">Investment Amount (USD):</label>
+            <input type="number" name="investment_amount" min="5000" step="0.01" required class="form-control">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Investment Strategy:</label>
+            <div class="form-check">
+                <input type="checkbox" name="strategies" value="Ethical Investing" class="form-check-input">
+                <label class="form-check-label" for="strategies">Ethical Investing</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="strategies" value="Growth Investing" class="form-check-input">
+                <label class="form-check-label" for="strategies">Growth Investing</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="strategies" value="Index Investing" class="form-check-input">
+                <label class="form-check-label" for="strategies">Index Investing</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="strategies" value="Quality Investing" class="form-check-input">
+                <label class="form-check-label" for="strategies">Quality Investing</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" name="strategies" value="Value Investing" class="form-check-input">
+                <label class="form-check-label" for="strategies">Value Investing</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Portfolio</button>
     </form>
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 
     {% if portfolio %}
-    <h2>Suggested Portfolio</h2>
+    <div class="container" id="created-portfolio" onsubmit="showStrategies()">
+        <h2 class="text-center">Portfolio Created</h2>
+        <p>Investment Money: {{investment_amount}}</span></p>
+        <p>Selected Strategies: {{strategies}}</p>
+        <form method="get">
+            <button id="reset-form" class="btn btn-primary">Create Another Portfolio</button>
+        </form>
+    </div>
+    <h2 class="text-center">Suggested Portfolio</h2>
 
-    <table>
-        <tr>
-            <th>Stock Symbol</th>
-            <th>Name</th>
-            <th>Investment Strategy</th>
-            <th>Investment Amount</th>
-            <th>Current Price</th>
-            <th>Number of Shares</th>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Stock Symbol</th>
+                <th>Name</th>
+                <th>Investment Strategy</th>
+                <th>Investment Amount</th>
+                <th>Current Price</th>
+                <th>Number of Shares</th>
 
-        </tr>
-        {% for stock_info in portfolio %}
-        <tr>
-            <td>{{ stock_info.stock.symbol }}</td>
-            <td>{{ stock_info.stock.name }}</td>
-            <td>{{ stock_info.stock.strategy }}</td>
-            <td>${{ stock_info.investment | round(2) }}</td>
-            <td>${{ stock_info.current_price | round(2) }}</td>
-            <td>{{ stock_info.num_shares | int }}</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock_info in portfolio %}
+            <tr>
+                <td>{{ stock_info.stock.symbol }}</td>
+                <td>{{ stock_info.stock.name }}</td>
+                <td>{{ stock_info.stock.strategy }}</td>
+                <td>${{ stock_info.investment | round(2) }}</td>
+                <td>${{ stock_info.current_price | round(2) }}</td>
+                <td>{{ stock_info.num_shares | int }}</td>
 
 
-        </tr>
-        {% endfor %}
+            </tr>
+            {% endfor %}
+            </thead>
     </table>
     {% endif %}
 
     {% if weekly_trend %}
-    <h2>Weekly Trend</h2>
-    <table>
-        <tr>
-            <th>Date</th>
-            <th>Portfolio Value</th>
-        </tr>
-        {% for trend in weekly_trend %}
-        <tr>
-            <td>{{ trend.date }}</td>
-            <td>${{ trend.value | round(2) }}</td>
-        </tr>
-        {% endfor %}
+    <h2 class="text-center">Weekly Trend</h2>
+    <table class="table table-striped table-bordered">
+        <thead>
+
+            <tr>
+                <th>Date</th>
+                <th>Portfolio Value</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for trend in weekly_trend %}
+            <tr>
+                <td>{{ trend.date }}</td>
+                <td>${{ trend.value | round(2) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
     </table>
+
+    <div class="chart-container">
+        <canvas id="weekly-trend-chart"></canvas>
+    </div>
+
+    <script>
+        var dates = [
+            {% for trend in weekly_trend %}
+        "{{ trend.date }}",
+            {% endfor %}
+            ];
+
+        var portfolioValues = [
+            {% for trend in weekly_trend %}
+        "{{ trend.value }}",
+            {% endfor %}
+            ];
+
+        console.log(dates, portfolioValues);
+
+        var ctx = document.getElementById('weekly-trend-chart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Portfolio Value',
+                    data: portfolioValues,
+                    fill: false,
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Portfolio Value'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
     {% endif %}
+
+
 </body>
 
 </html>
