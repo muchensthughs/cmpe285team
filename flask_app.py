@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, session
-# import MySQLdb
+from flask import Flask, render_template, request, session, url_for, redirect
+import MySQLdb
 from config import *
 from utils import *
 from stock_portfolio import Strategy, create_portfolio, calculate_weekly_trend
@@ -7,12 +7,14 @@ from stock_portfolio import Strategy, create_portfolio, calculate_weekly_trend
 app = Flask(__name__)
 app.secret_key = 'uihd3453'
 
-# db=MySQLdb.connect(MYSQL_HOST,MYSQL_USER,MYSQL_PASSWORD,MYSQL_DB)
+db=MySQLdb.connect(MYSQL_HOST,MYSQL_USER,MYSQL_PASSWORD,MYSQL_DB)
 
-# @app.route('/', methods=['GET'])
-# def index():
-#     return render_template('index.html')
-
+@app.route('/', methods=['GET'])
+def index():
+    if not session.get('username'):
+        return render_template('index.html')
+    else:
+        return redirect(url_for('engine'))
 
 @app.route('/test')
 def test():
@@ -24,7 +26,6 @@ def testmysql():
     sql = "select * from user limit 1"
     res = executeSql(db, sql)
     return res[0][0]
-
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -38,8 +39,13 @@ def login():
     else:
         # save username to session
         session['username'] = username
-    # got to page that shows current plan etc.
-    return session.pop('username', None)
+        # got to page that shows current plan etc.
+        return redirect(url_for('engine'))
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))   
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -52,14 +58,15 @@ def signup():
         sql = "insert into user values ('%s', '%s')" % (username, password)
         try:
             executeSql(db, sql)
+            db.commit()
         except Exception as e:
             return render_template('signup.html', message='Sign up failed, please try a different combination')
         return render_template('index.html')
 
 
 # route for the Stock Portfolio Suggestion Engine
-@app.route("/", methods=["GET", "POST"])
-def index():
+@app.route("/engine", methods=["GET", "POST"])
+def engine():
     # Check if the request method is POST (form submission)
     if request.method == "POST":
         # Get the investment amount and selected strategies from the form

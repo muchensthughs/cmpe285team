@@ -30,13 +30,29 @@
         h2{
             padding: 20px;
         }
+        .flex-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
     </style>
 
 
 </head>
 
 <body>
-    <h1>Stock Portfolio Suggestion Engine</h1>
+    <div class="flex-container">
+        <div>
+            <h1>Stock Portfolio Suggestion Engine</h1>
+        </div>
+        <div>
+            <form method="get" action="/logout">
+                <button class="btn btn-primary">Logout</button>
+            </form>
+        </div>
+    </div>
     {% if not portfolio %}
     <form id="portfolio-form" method="POST" autocomplete="off" onsubmit="validateForm(event)">
         <div class="mb-3">
