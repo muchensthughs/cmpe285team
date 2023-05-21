@@ -69,10 +69,16 @@ How many extra feature should be implemented to improve the project.
 
 ## How to start (for developer)
 1. set up your lcoal mysql server
-2. start mysql server. Check db content through
+2. Install MySQLdb by following repo readme https://github.com/PyMySQL/mysqlclient/tree/main
+3. Install other packages
+``` 
+pip install yfinance 
+pip install Flask
+```
+4. start mysql server. Check db content through
 ` sudo mysql -u root `
-3. In config.py, change configs for your own mysql server
-4. run app
+5. In config.py, change configs for your own mysql server
+6. run app
 ```
 export FLASK_APP=flask_app
 export FLASK_ENV=development
