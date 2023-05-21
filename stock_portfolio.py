@@ -47,26 +47,35 @@ def get_stock_data(stock_symbol):
 
 
 # Create a portfolio based on user's selected strategies and investment amount
-def create_portfolio(investment_amount, selected_strategies):
+def create_portfolio(investment_amount, selected_strategies, percentages):
     # create new list for the 3 stocks/ETFs mapped on the selected strategies
     selected_stocks = [x for x in strategies if x.strategy in selected_strategies]
     # Divide the investment amount evenly for each stock
-    investment_per_stock = investment_amount / len(selected_stocks)
+    # investment_per_stock = investment_amount / len(selected_stocks)
+    investments = [None] * len(selected_stocks)
+    for i, stock in enumerate(selected_stocks):
+        strategy_index = selected_strategies.index(stock.strategy)
+        perc_per_stock = percentages[strategy_index]/3
+        # print(perc_per_stock)
+        investments[i] = investment_amount * (perc_per_stock/100)
+    # print(investments)
+
     portfolio = []
 
     # Loop through the selected stocks to store data in portfolio
-    for stock in selected_stocks:
+    for i, stock in enumerate(selected_stocks):
         # Get the stock data from yf
         stock_data = get_stock_data(stock.symbol)
         # Get the current price of the stock
         current_price = float(stock_data["Close"].iloc[-1])
         # Number of shares to buy
-        num_shares = investment_per_stock / current_price
+        # num_shares = investment_per_stock / current_price
+        num_shares = investments[i] / current_price
         # Add the stock data to the portfolio
         portfolio.append(
             {
                 "stock": stock,
-                "investment": investment_per_stock,
+                "investment": investments[i], # investment_per_stock,
                 "num_shares": num_shares,
                 "current_price": current_price,
                 "stock_data": stock_data,

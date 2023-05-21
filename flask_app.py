@@ -74,8 +74,11 @@ def engine():
         strategies = request.form.getlist("strategies")
         strategies_string = str(','.join(strategies))
         print("strategies", strategies_string)
+        percentages = request.form.getlist("strategy_percentage")
+        percentages = list(map(float, percentages))
+        print("percentages", percentages)
         # Create the portfolio and weekly history based on the investment amount and strategies
-        portfolio = create_portfolio(investment_amount, strategies)
+        portfolio = create_portfolio(investment_amount, strategies, percentages)
         weekly_trend = calculate_weekly_trend(portfolio)
 
         # Render the portfolio and weekly history data

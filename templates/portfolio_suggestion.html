@@ -11,10 +11,33 @@
     <script>
         function validateForm(event) {
             const checked_strategies = document.querySelectorAll('input[name="strategies"]:checked').length;
-
+            const percentages = document.getElementsByName("strategy_percentage")
             if (checked_strategies < 1 || checked_strategies > 2) {
                 alert("Please select one or two strategies.");
                 event.preventDefault();
+            }
+            let sumOfPercentages = 0;
+            for (let i = 0; i < percentages.length; i++) {
+                if (percentages[i].value != '') {
+                    sumOfPercentages += parseFloat(percentages[i].value)/100;
+                }
+            }
+            if (sumOfPercentages !== 1) {
+                alert("please make sure the percentages sum to 100");
+                event.preventDefault();
+            }
+        }
+
+        function onCheck() {
+            const checkboxes = document.querySelectorAll('input[name="strategies"]')
+            for (let i = 0; i < checkboxes.length; i++) {
+                perc_input = document.getElementById(checkboxes[i].value)
+                if (checkboxes[i].checked) {
+                    perc_input.disabled = false
+                } else {
+                    perc_input.disabled = true
+                    perc_input.value = ''
+                }
             }
         }
 
@@ -62,24 +85,29 @@
         <div class="mb-3">
             <label class="form-label">Investment Strategy:</label>
             <div class="form-check">
-                <input type="checkbox" name="strategies" value="Ethical Investing" class="form-check-input">
+                <input type="checkbox" name="strategies" value="Ethical Investing" class="form-check-input" onclick="onCheck()">
                 <label class="form-check-label" for="strategies">Ethical Investing</label>
+                <input type="number" min="0" max="100" class="strategy_percentage" id="Ethical Investing" name="strategy_percentage" disabled/>
             </div>
             <div class="form-check">
-                <input type="checkbox" name="strategies" value="Growth Investing" class="form-check-input">
+                <input type="checkbox" name="strategies" value="Growth Investing" class="form-check-input" onclick="onCheck()">
                 <label class="form-check-label" for="strategies">Growth Investing</label>
+                <input type="number" min="0" max="100" class="strategy_percentage" id="Growth Investing" name="strategy_percentage" disabled/>
             </div>
             <div class="form-check">
-                <input type="checkbox" name="strategies" value="Index Investing" class="form-check-input">
+                <input type="checkbox" name="strategies" value="Index Investing" class="form-check-input" onclick="onCheck()">
                 <label class="form-check-label" for="strategies">Index Investing</label>
+                <input type="number" min="0" max="100" class="strategy_percentage" id="Index Investing" name="strategy_percentage" disabled/>
             </div>
             <div class="form-check">
-                <input type="checkbox" name="strategies" value="Quality Investing" class="form-check-input">
+                <input type="checkbox" name="strategies" value="Quality Investing" class="form-check-input" onclick="onCheck()">
                 <label class="form-check-label" for="strategies">Quality Investing</label>
+                <input type="number" min="0" max="100" class="strategy_percentage" id="Quality Investing" name="strategy_percentage" disabled/>
             </div>
             <div class="form-check">
-                <input type="checkbox" name="strategies" value="Value Investing" class="form-check-input">
+                <input type="checkbox" name="strategies" value="Value Investing" class="form-check-input" onclick="onCheck()">
                 <label class="form-check-label" for="strategies">Value Investing</label>
+                <input type="number" min="0" max="100" class="strategy_percentage" id="Value Investing" name="strategy_percentage" disabled/>
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Create Portfolio</button>
